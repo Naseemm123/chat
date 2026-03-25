@@ -18,6 +18,10 @@ function App() {
   const [privateRoomName, setPrivateRoomName] = useState('')
   const [privateRoomPassword, setPrivateRoomPassword] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [clientId] = useState(() => {
+    const randomPart = Math.random().toString(36).slice(2, 10)
+    return `client-${Date.now()}-${randomPart}`
+  })
 
   const socketRef = useRef(null)
   const messagesEndRef = useRef(null)
@@ -61,7 +65,8 @@ function App() {
         JSON.stringify({
           type: 'CONNECT',
           sender: cleanName,
-          roomId: selectedRoom
+          roomId: selectedRoom,
+          senderClientId: clientId
         })
       )
     }
@@ -224,15 +229,27 @@ function App() {
         </div>
 
         <div className="messages">
-          {messages.map((message, idx) => (
-            <div key={idx} className={message.type === 'SYSTEM' || message.type === 'ERROR' ? 'message system' : 'message'}>
-              <div className="meta">
-                <strong>{message.sender}</strong>
-                <span>{message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}</span>
+          {messages.map((message, idx) => {
+            const isSystem = message.type === 'SYSTEM' || message.type === 'ERROR'
+            const sameClient = message.senderClientId && message.senderClientId === clientId
+            const sameUsername =
+              (message.sender || '').trim().toLowerCase() === username.trim().toLowerCase()
+            const isMine = !isSystem && (sameClient || sameUsername)
+            const rowClass = isSystem ? 'message-row system' : isMine ? 'message-row mine' : 'message-row other'
+            const bubbleClass = isSystem ? 'message system' : isMine ? 'message mine' : 'message other'
+
+            return (
+              <div key={idx} className={rowClass}>
+                <div className={bubbleClass}>
+                  <div className="meta">
+                    <strong>{isMine ? 'You' : message.sender}</strong>
+                    <span>{message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}</span>
+                  </div>
+                  <p>{message.content}</p>
+                </div>
               </div>
-              <p>{message.content}</p>
-            </div>
-          ))}
+            )
+          })}
           <div ref={messagesEndRef} />
         </div>
 

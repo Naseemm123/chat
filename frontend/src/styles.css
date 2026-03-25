@@ -188,15 +188,45 @@ button:hover {
   gap: 10px;
 }
 
+.message-row {
+  display: flex;
+}
+
+.message-row.mine {
+  justify-content: flex-end;
+}
+
+.message-row.other {
+  justify-content: flex-start;
+}
+
+.message-row.system {
+  justify-content: center;
+}
+
 .message {
+  width: fit-content;
+  max-width: min(75%, 680px);
   background: #111827;
   border: 1px solid #1f2937;
-  border-radius: 10px;
+  border-radius: 14px;
   padding: 10px 12px;
 }
 
 .message.system {
+  max-width: min(85%, 760px);
   background: #1e293b;
+}
+
+.message.other {
+  background: #1f2937;
+  border: 1px solid #475569;
+}
+
+.message.mine {
+  background: #2563eb;
+  border: 1px solid #1e40af;
+  color: #ffffff;
 }
 
 .meta {
@@ -210,6 +240,19 @@ button:hover {
 .message p {
   margin: 6px 0 0;
   color: #e5e7eb;
+  line-height: 1.35;
+}
+
+.message.mine p {
+  color: #ffffff;
+}
+
+.message.mine .meta {
+  color: #dbeafe;
+}
+
+.message.other .meta {
+  color: #cbd5e1;
 }
 
 .composer {

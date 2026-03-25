@@ -72,7 +72,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         String username = message.getSender().trim();
-        chatService.connectUser(session, username, roomId);
+        // Backward compatibility:
+        // If older frontend does not send senderClientId, use session id.
+        String clientId = (message.getSenderClientId() == null || message.getSenderClientId().isBlank())
+                ? session.getId()
+                : message.getSenderClientId().trim();
+
+        chatService.connectUser(session, username, roomId, clientId);
         chatService.sendSystemMessage(session, "Connected as " + username + " in room " + roomId + ".");
     }
 

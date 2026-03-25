@@ -14,6 +14,8 @@ public class ChatMessage {
     private String roomId;
     // Password used when trying to join a private room.
     private String roomPassword;
+    // Unique per-browser client id used to identify message ownership.
+    private String senderClientId;
     // Text content of the message.
     private String content;
     // ISO-8601 timestamp string, for example 2026-03-02T12:34:56Z.
@@ -65,5 +67,13 @@ public class ChatMessage {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getSenderClientId() {
+        return senderClientId;
+    }
+
+    public void setSenderClientId(String senderClientId) {
+        this.senderClientId = senderClientId;
     }
 }
